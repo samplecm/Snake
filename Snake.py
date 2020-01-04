@@ -9,11 +9,11 @@ from tkinter import messagebox
 class Cube(object):
 	rows = 20
 	w = 500
-	def __init__(self,start,xDir=1,yDir=0,color=(255,0,0)):
+	def __init__(self,start,xDir=1,yDir=0,colour=(255,0,0)):
 		self.pos = start
 		self.xDir = 1
 		self.yDir = 0
-		self.color = color
+		self.colour = colour
 		
 		
 	def move(self,xDir,yDir):
@@ -29,7 +29,7 @@ class Cube(object):
 		i = self.pos[0]
 		j = self.pos[1]
 		
-		pygame.draw.rect(surface,self.color,(i*dis+1,j*dis+1,dis-2,dis-2))
+		pygame.draw.rect(surface,self.colour,(i*dis+1,j*dis+1,dis-2,dis-2))
 		
 		if eyes:
 			centre = dis//2
@@ -45,8 +45,8 @@ class Cube(object):
 class Snake(object):
 	body = []
 	turns = {}
-	def __init__(self,color,pos):
-		self.color = color
+	def __init__(self,colour,pos):
+		self.colour = colour
 		self.head = Cube(pos)
 		self.body.append(self.head)
 		self.xDir = 0
@@ -188,7 +188,7 @@ def main():
 	
 	
 	snake = Snake((250,255,0),(10,10))#initial position
-	snack = Cube(randomSnack(rows,snake),color = (0,0,255))
+	snack = Cube(randomSnack(rows,snake),colour = (0,0,255))
 	flag = True
 	
 	clock = pygame.time.Clock()
@@ -203,7 +203,7 @@ def main():
 			colour2 = randint(0,255)
 			colour3 = randint(0,255)
 			
-			snack = Cube(randomSnack(rows,snake),color = (colour1,colour2,colour3))
+			snack = Cube(randomSnack(rows,snake),colour = (colour1,colour2,colour3))
 		
 		for x in range(len(snake.body)):
 			if snake.body[x].pos in list(map(lambda z:z.pos,snake.body[x+1:])):

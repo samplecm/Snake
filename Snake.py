@@ -93,25 +93,25 @@ class Snake(object):
 			else: #of at edges of screen, loop back to other side.
 				if c.pos[0] < 0: #c.pos = (c.rows-1,c.pos[1])
 					gameOver = True
-					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
 					time.sleep(1.631)
 					break
 				elif c.pos[0] >= rows: #c.pos = (0,c.pos[1])
 					gameOver = True
-					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
 					time.sleep(1.631)
 					break
 				elif c.pos[1]>=rows: #c.pos = (c.pos[0],0)
 					gameOver = True
-					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
 					time.sleep(1.631)
 					break
 				elif c.pos[1] < 0: 
 					gameOver = True #c.pos = (c.pos[0],c.rows-1)
-					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
 					time.sleep(1.631)
 					break
@@ -213,7 +213,7 @@ def GO_Screen():
 	waiting = True
 	snake.reset((10,10))
 	pygame.init()
-	pygame.mixer.music.load('BadMain.WAV')
+	pygame.mixer.music.load('Sounds/BadMain.WAV')
 	pygame.mixer.music.play(-1)
 	
 	while waiting:
@@ -227,12 +227,12 @@ def GO_Screen():
 				waiting = False
 				pygame.mixer.quit()
 				pygame.init()
-				pygame.mixer.music.load('BadIntro.WAV')#load it back up for next time.
+				pygame.mixer.music.load('Sounds/BadIntro.WAV')#load it back up for next time.
 				
 				break
 def MJNoise():
 	
-	sound = str(randint(1,28)) + '.WAV'
+	sound = 'Sounds/' + str(randint(1,28)) + '.WAV'
 	print(sound)
 	pygame.mixer.music.load(sound)
 	pygame.mixer.music.load(sound)
@@ -270,7 +270,7 @@ def main():
 	
 	
 	window = pygame.display.set_mode((width,width))
-	pygame.mixer.music.load('BadIntro.WAV')
+	pygame.mixer.music.load('Sounds/BadIntro.WAV')
 				
 	
 	snake = Snake((200,255,0),(10,10))#initial position
@@ -314,7 +314,7 @@ def main():
 				score = len(snake.body)-1
 				print('Score: ' , score)
 				gameOver = True
-				pygame.mixer.music.load('BadIntro.WAV')
+				pygame.mixer.music.load('Sounds/BadIntro.WAV')
 				pygame.mixer.music.play(1)
 				time.sleep(1.631)
 				

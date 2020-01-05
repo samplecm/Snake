@@ -4,6 +4,9 @@ import random
 from random import randint
 import tkinter as tk
 from tkinter import messagebox
+import winsound
+from playsound import playsound
+import time
 
 #################################################################################
 class Cube(object):
@@ -90,15 +93,27 @@ class Snake(object):
 			else: #of at edges of screen, loop back to other side.
 				if c.pos[0] < 0: #c.pos = (c.rows-1,c.pos[1])
 					gameOver = True
+					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.play(1)
+					time.sleep(1.631)
 					break
 				elif c.pos[0] >= rows: #c.pos = (0,c.pos[1])
 					gameOver = True
+					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.play(1)
+					time.sleep(1.631)
 					break
 				elif c.pos[1]>=rows: #c.pos = (c.pos[0],0)
 					gameOver = True
+					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.play(1)
+					time.sleep(1.631)
 					break
 				elif c.pos[1] < 0: 
 					gameOver = True #c.pos = (c.pos[0],c.rows-1)
+					pygame.mixer.music.load('BadIntro.WAV')
+					pygame.mixer.music.play(1)
+					time.sleep(1.631)
 					break
 				else: c.move(c.xDir,c.yDir)
 				
@@ -192,9 +207,15 @@ def GO_Screen():
 	drawText(window,scoreStatement, 25,width/10,width/10)
 	drawText(window,"Press any key to begin a new game",50,width/2,width*3/4)
 	
+	
 	pygame.display.flip()
+	
 	waiting = True
 	snake.reset((10,10))
+	pygame.init()
+	pygame.mixer.music.load('BadMain.WAV')
+	pygame.mixer.music.play(-1)
+	
 	while waiting:
 		
 		
@@ -204,7 +225,19 @@ def GO_Screen():
 				pygame.quit()
 			if event.type == pygame.KEYDOWN:
 				waiting = False
+				pygame.mixer.quit()
+				pygame.init()
+				pygame.mixer.music.load('BadIntro.WAV')#load it back up for next time.
+				
 				break
+def MJNoise():
+	
+	sound = str(randint(1,28)) + '.WAV'
+	print(sound)
+	pygame.mixer.music.load(sound)
+	pygame.mixer.music.load(sound)
+	pygame.mixer.music.play(1)
+			
 
 def drawText(surface,text,size,x,y):
 	
@@ -235,24 +268,22 @@ def main():
 	rows = 32
 	pygame.init()
 	
-	window = pygame.display.set_mode((width,width))
 	
+	window = pygame.display.set_mode((width,width))
+	pygame.mixer.music.load('BadIntro.WAV')
+				
 	
 	snake = Snake((200,255,0),(10,10))#initial position
 	snack = Cube(randomSnack(rows,snake),colour = (0,0,255))
-	flag = True
+	on = True
 	gameOver= False
 	myFont = pygame.font.match_font('8-Bit-Madness')
 	clock = pygame.time.Clock()
 	
-	while flag:
+	while on:
 		
 		
-		
-		
-			
-			
-		
+
 		
 		pygame.time.delay(10)
 		clock.tick(15)#make sure no mare than 10fps	
@@ -261,10 +292,12 @@ def main():
 			score = len(snake.body)-1
 			gameOver = False
 			snake.reset((10,10))
+			
 			GO_Screen()
 			
 		
 		if snake.body[0].pos == snack.pos:
+			MJNoise()
 			snake.addCube()
 			colour1 = randint(0,255)
 			colour2 = randint(0,255)
@@ -281,6 +314,9 @@ def main():
 				score = len(snake.body)-1
 				print('Score: ' , score)
 				gameOver = True
+				pygame.mixer.music.load('BadIntro.WAV')
+				pygame.mixer.music.play(1)
+				time.sleep(1.631)
 				
 				#message_box('You Lost','Play Again')
 				

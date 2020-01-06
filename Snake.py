@@ -1,12 +1,8 @@
 import pygame
-import math
 import random
 from random import randint
-import tkinter as tk
-from tkinter import messagebox
-import winsound
-from playsound import playsound
 import time
+
 
 #################################################################################
 class Cube(object):
@@ -26,7 +22,7 @@ class Cube(object):
 		   
 		
 		
-	def draw(self,surface,eyes=False):
+	def draw(self,surface,head=False):
 		#need distance between x and y values
 		dis = self.w // self.rows
 		i = self.pos[0]
@@ -34,13 +30,16 @@ class Cube(object):
 		
 		pygame.draw.rect(surface,self.colour,(i*dis+1,j*dis+1,dis-2,dis-2))
 		
-		if eyes:
-			centre = dis//2
-			radius=4
-			circleMiddle = (i*dis+centre-radius,j*dis+8)
-			circleMiddle2 = (i*dis + dis-radius*2,j*dis+8)
-			pygame.draw.circle(surface,(0,0,0),circleMiddle,radius)
-			pygame.draw.circle(surface,(0,0,0),circleMiddle2,radius)
+		if head:
+			mJFace = pygame.image.load(r'C:\Users\sampl\Documents\Python\Snake\Photos/MJ_Face.jpg')
+			mJFace = pygame.transform.scale(mJFace, (int(800/32),int(800/32)))
+			window.blit(mJFace,(i*dis+1,j*dis+1,dis-2,dis-2))
+#			centre = dis//2
+#			radius=4
+#			circleMiddle = (i*dis+centre-radius,j*dis+8)
+#			circleMiddle2 = (i*dis + dis-radius*2,j*dis+8)
+#			pygame.draw.circle(surface,(0,0,0),circleMiddle,radius)
+#			pygame.draw.circle(surface,(0,0,0),circleMiddle2,radius)
 ###########################################################################			
 		
 	
@@ -95,25 +94,25 @@ class Snake(object):
 					gameOver = True
 					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
-					time.sleep(1.631)
+					time.sleep(1.63)
 					break
 				elif c.pos[0] >= rows: #c.pos = (0,c.pos[1])
 					gameOver = True
 					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
-					time.sleep(1.631)
+					time.sleep(1.63)
 					break
 				elif c.pos[1]>=rows: #c.pos = (c.pos[0],0)
 					gameOver = True
 					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
-					time.sleep(1.631)
+					time.sleep(1.63)
 					break
 				elif c.pos[1] < 0: 
 					gameOver = True #c.pos = (c.pos[0],c.rows-1)
 					pygame.mixer.music.load('Sounds/BadIntro.WAV')
 					pygame.mixer.music.play(1)
-					time.sleep(1.631)
+					time.sleep(1.63)
 					break
 				else: c.move(c.xDir,c.yDir)
 				
@@ -127,18 +126,19 @@ class Snake(object):
 		self.xDir = 1
 		self.yDir = 0
 		
-	def addCube(self):
+	def addCube(self,colour):
+		
 		tail = self.body[-1]
 		dx,dy = tail.xDir,tail.yDir
 		#check direction of movement, to know where to add cube.
 		if dx == 1 and dy == 0:
-			self.body.append(Cube((tail.pos[0]-1,tail.pos[1])))
+			self.body.append(Cube((tail.pos[0]-1,tail.pos[1]),dx,dy,colour))
 		elif dx ==-1 and dy == 0:
-			self.body.append(Cube((tail.pos[0]+1,tail.pos[1])))
+			self.body.append(Cube((tail.pos[0]+1,tail.pos[1]),dx,dy,colour))
 		elif dx == 0 and dy ==1:
-			self.body.append(Cube((tail.pos[0],tail.pos[1]-1)))
+			self.body.append(Cube((tail.pos[0],tail.pos[1]-1),dx,dy,colour))
 		elif dx ==0 and dy == -1:
-			self.body.append(Cube((tail.pos[0],tail.pos[1]+1)))
+			self.body.append(Cube((tail.pos[0],tail.pos[1]+1),dx,dy,colour))
 		
 		self.body[-1].xDir = dx
 		self.body[-1].yDir = dy
@@ -172,12 +172,12 @@ class Snake(object):
 #		
 def redrawWindow(surface):
 	global rows, width, snake
-	surface.fill((50,220,180))
+	surface.fill((0,0,0))
 	snake.draw(surface)
 	snack.draw(surface)
 	score = len(snake.body)-1
 	scoreStatement = 'Score: ' + str(score)
-	drawText(window,scoreStatement, 25,width/(rows-15),width/(rows-10))
+	drawText(window,scoreStatement, 25,width/(rows-15),width/(rows-10),(255,255,255))
 	
 	#drawGrid(width,rows,surface)
 	pygame.display.update()
@@ -196,16 +196,45 @@ def randomSnack(rows,item):
 			break
 	return (x,y)
 
-def GO_Screen():
+def highScoreFetch():
+	highScore = 0 #default
+	
+	try:
+		highScoreFile = open('highScore.txt','r')
+		highScore  = int(highScoreFile.read())
+		highScoreFile.close()
+	except:
+		print('IO error')	
+	if score > highScore:
+		highScore = score
+		highScoreFile = open('highScore.txt','w')
+		highScoreFile.write(str(highScore))
+		highScoreFile.close()
+		
+	
+	return highScore
+	
+		
+
+def GO_Screen():#Game Over Screen/ Start up Screen
+	
+	WHITE = (255,255,255)
 	
 	
+	highScore = highScoreFetch()
 	scoreStatement = 'Score: ' + str(score)
+	highScoreStatement = 'High Score: ' + str(highScore)
 	
-	window.fill((0,150,255))
-	drawText(window,"SNAKE",100 ,width / 2, width / 4)
-	drawText(window,"Arrow Keys to move",50,width/2,width/2)
-	drawText(window,scoreStatement, 25,width/10,width/10)
-	drawText(window,"Press any key to begin a new game",50,width/2,width*3/4)
+	window.fill((50,180,255))
+	mJFace = pygame.image.load(r'C:\Users\sampl\Documents\Python\Snake\Photos/MJ_Outline.jpg')
+	mJFace = pygame.transform.scale(mJFace, (int(800*0.55),int(800*0.55)))
+	window.blit(mJFace,(800*0.23,800*0.4))	
+	drawText(window,"MJ SNAKE",120 ,width / 2, width / 6.5,(175,20,20))
+	drawText(window,"Use the arrow keys to move",35,width/2,width/3,WHITE)
+	drawText(window,scoreStatement, 25,width/9.5,width/30,WHITE)
+	drawText(window,"Press any key to begin a new game",40,width/2,width/3.5,(250,250,250))
+	drawText(window,highScoreStatement, 25,width/13,width/125,WHITE)
+
 	
 	
 	pygame.display.flip()
@@ -230,43 +259,36 @@ def GO_Screen():
 				pygame.mixer.music.load('Sounds/BadIntro.WAV')#load it back up for next time.
 				
 				break
-def MJNoise():
+def mJNoise():
 	
-	sound = 'Sounds/' + str(randint(1,28)) + '.WAV'
+	sound = 'Sounds/' + str(randint(1,48)) + '.WAV'
 	print(sound)
 	pygame.mixer.music.load(sound)
 	pygame.mixer.music.load(sound)
 	pygame.mixer.music.play(1)
 			
 
-def drawText(surface,text,size,x,y):
+def drawText(surface,text,size,x,y,colour):
 	
 	font  = pygame.font.Font(myFont,size)
-	text_surface = font.render(text,True,(0,0,0)) #anti-alias or not
+	text_surface = font.render(text,True,colour) #anti-alias or not
 	text_rect = text_surface.get_rect()
 	text_rect.midtop = (x,y)	
 	window.blit(text_surface,text_rect)		
  				
-		
-#def message_box(subject,content):
-#	root = tk.Tk()
-#	root.attributes("-topmost",True)
-#	root.withdraw()
-#	messagebox.showinfo(subject,content)
-#	try:
-#		root.destroy()
-#	except:
-#		pass
-#	
-	
 	
 
 def main():
 	
-	global width,rows,snake,snack,clock,myFont,window,score,gameOver
+	global width,rows,snake,snack,clock,myFont,window,score,gameOver, highScore
 	width = 800
 	rows = 32
+	
 	pygame.init()
+	colList1 = [255,255,0,0,255,0,255,154,255,250,173,102,0]
+	colList2 = [255,0,255,0,255,255,0,205,140,128,255,205,191]
+	colList3 = [255,0,0,255,0,255,255,50,0,114,147,170,255]
+	
 	
 	
 	window = pygame.display.set_mode((width,width))
@@ -276,7 +298,7 @@ def main():
 	snake = Snake((200,255,0),(10,10))#initial position
 	snack = Cube(randomSnack(rows,snake),colour = (0,0,255))
 	on = True
-	gameOver= False
+	gameOver= True
 	myFont = pygame.font.match_font('8-Bit-Madness')
 	clock = pygame.time.Clock()
 	
@@ -297,14 +319,20 @@ def main():
 			
 		
 		if snake.body[0].pos == snack.pos:
-			MJNoise()
-			snake.addCube()
-			colour1 = randint(0,255)
-			colour2 = randint(0,255)
-			colour3 = randint(0,255)
-			
-			if colour1 < 100 and colour2 < 100 and colour3 < 100:
+			if len(snake.body)==1:
 				colour1 = 0
+				colour2 = 0
+				colour3 = 255
+			
+			mJNoise()
+			snake.addCube((colour1,colour2,colour3))
+			
+			colour1 = colList1[randint(0,12)]
+			colour2 = colList2[randint(0,12)]
+			colour3 = colList3[randint(0,12)]
+			
+			
+				
 			
 					
 			snack = Cube(randomSnack(rows,snake),colour = (colour1,colour2,colour3))
@@ -316,15 +344,11 @@ def main():
 				gameOver = True
 				pygame.mixer.music.load('Sounds/BadIntro.WAV')
 				pygame.mixer.music.play(1)
-				time.sleep(1.631)
+				time.sleep(1.63)
 				
-				#message_box('You Lost','Play Again')
+				
 				
 				break
-			
-		
-			
-			
 		
 		redrawWindow(window)
 		

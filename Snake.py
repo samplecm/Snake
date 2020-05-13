@@ -10,8 +10,8 @@ class Cube(object):
 	w = 800
 	def __init__(self,start,xDir=1,yDir=0,colour=(255,255,0)):
 		self.pos = start
-		self.xDir = 1
-		self.yDir = 0
+		self.xDir = xDir
+		self.yDir = yDir
 		self.colour = colour
 		
 		
@@ -355,5 +355,3 @@ def main():
 		pass
 if __name__ == '__main__':
 	main()
-
-
